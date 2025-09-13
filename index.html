@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infected Insights</title>
+  <style>
+    /* ---------------- Reset ---------------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    /* ---------------- Body ---------------- */
+    body {
+      min-height: 100vh;
+      background: #0f172a;
+      color: #cbd5e1;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ---------------- Floating red circles ---------------- */
+    .circles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .circles span {
+      position: absolute;
+      display: block;
+      border-radius: 50%;
+      bottom: -150px;
+      background: rgba(220, 38, 38, 0.6);
+      animation: float 25s linear infinite;
+    }
+    .circles span:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-duration: 20s; animation-delay: 5s; }
+    .circles span:nth-child(2) { left: 10%; width: 40px; height: 40px; animation-duration: 18s; animation-delay: 6s;}
+    .circles span:nth-child(3) { left: 70%; width: 100px; height: 100px; animation-duration: 30s; animation-delay: 4s;}
+    .circles span:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-duration: 22s; animation-delay: 5s;}
+    .circles span:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-duration: 17s; animation-delay: 0s;}
+    .circles span:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-duration: 32s; animation-delay: 3s;}
+    .circles span:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-duration: 28s; animation-delay: 9s;}
+    .circles span:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-duration: 15s; animation-delay: 5s;}
+    .circles span:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-duration: 12s; animation-delay: 4s;}
+    .circles span:nth-child(10) { left: 85%; width: 90px; height: 90px; animation-duration: 26s; animation-delay: 8s;}
+    .circles span:nth-child(11) { left: 5%; width: 50px; height: 50px; animation-duration: 24s; animation-delay: 1s; }
+    .circles span:nth-child(12) { left: 60%; width: 35px; height: 35px; animation-duration: 19s; animation-delay: 9s; }
+    .circles span:nth-child(13) { left: 30%; width: 120px; height: 120px; animation-duration: 34s; animation-delay: 2s; }
+    .circles span:nth-child(14) { left: 80%; width: 45px; height: 45px; animation-duration: 21s; animation-delay: 2s; }
+    .circles span:nth-child(15) { left: 15%; width: 60px; height: 60px; animation-duration: 23s; animation-delay: 10s; }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
+    }
+
+    /* ---------------- Content Container ---------------- */
+    .content-container {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 100px auto;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      color: #fff;
+    }
+    h1 { text-align: center; font-size: 2rem; color: #f87171; margin-bottom: 15px; }
+    p { font-size: 18px; line-height: 1.6; }
+
+    /* ---------------- Header ---------------- */
+    header {
+      background: #1e293b;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+      position: relative;
+      z-index: 2;
+      flex-wrap: wrap;
+    }
+    .logo-container { display: flex; align-items: center; }
+    .logo-container img.logo { width:50px; height:50px; margin-right:10px; }
+    .logo-container h1 { color:#38bdf8; font-size:1.6rem; margin:0; }
+
+    /* ---------------- Hamburger menu button ---------------- */
+    .menu-btn {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 28px;
+      height: 22px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 3;
+    }
+    .menu-btn .bar {
+      height: 4px;
+      width: 100%;
+      background-color: #e2e8f0;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+    /* Animation into X */
+    .menu-btn.open .bar:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+    .menu-btn.open .bar:nth-child(2) { opacity: 0; }
+    .menu-btn.open .bar:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+
+    /* ---------------- Dropdown menu ---------------- */
+    .menu {
+      display: flex;
+      flex-direction: column;
+      position:absolute;
+      top:60px;
+      right:20px;
+      background:#1e293b;
+      border-radius:8px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.5);
+      min-width:160px;
+      z-index:1000;
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.3s ease;
+    }
+    .menu.show { max-height: 500px; }
+    .menu a {
+      color:#1c9ade;
+      padding:12px;
+      text-decoration:none;
+      display:block;
+      font-weight:bold;
+      transition:0.3s;
+    }
+    .menu a:hover {
+    background:#0f172a;
+    color:#269bcd; }
+
+    /* ---------------- Sections ---------------- */
+    section {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 40px auto;
+      position: relative;
+      z-index: 1;
+      background: rgba(30, 41, 59, 0.85);
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    section h2 { color:#38bdf8; margin-bottom:15px; }
+    section p { color:#cbd5e1; line-height:1.6; font-size: 16px; }
+
+    /* ---------------- Footer ---------------- */
+    footer {
+      text-align:center;
+      padding:20px;
+      background:#1e293b;
+      margin-top:40px;
+      font-size:0.9rem;
+      color:#94a3b8;
+      position:relative;
+      z-index:1;
+    }
+
+    /* ---------------- Responsive ---------------- */
+    @media (max-width: 768px) {
+      .content-container { margin: 70px 15px; padding: 20px; }
+      h1 { font-size: 1.8rem; }
+      p { font-size: 16px; }
+    }
+    @media (max-width: 480px) {
+      .content-container { margin: 50px 10px; padding: 15px; }
+      h1 { font-size: 1.5rem; }
+      p { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating circles background -->
+  <div class="circles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="Infected Insights Logo" class="logo">
+      <h1>Infected Insights</h1>
+    </div>
+
+    <!-- Hamburger menu button -->
+    <button class="menu-btn" id="menu-btn" onclick="toggleMenu()">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <!-- Dropdown menu -->
+    <div id="menu" class="menu">
+      <a href="data.html">COVID-19 Data</a>
+      <a href="about.html">About</a>
+      <a href="articles.html">Articles</a>
+      <a href="#contact">Contact</a>
+      <a href="#">Dashboard</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="content-container">
+    <h1>Welcome to Infected Insights</h1>
+    <p>Your hub for COVID-19 information, news, and analysis.</p>
+
+    <section id="covid">
+      <h2>COVID-19 Statistics</h2>
+      <p>Latest global and local COVID-19 statistics will be displayed here.</p>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Infected Insights. All rights reserved.
+  </footer>
+
+  <!-- JS -->
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      const btn = document.getElementById('menu-btn');
+      menu.classList.toggle('show');
+      btn.classList.toggle('open');
+    }
+
+    window.addEventListener('click', function(e){
+      const menu = document.getElementById('menu');
+      const btn = document.getElementById('menu-btn');
+      if(!menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.classList.remove('show');
+        btn.classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>
